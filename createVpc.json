@@ -1,0 +1,81 @@
+{
+      "AWSTemplateFormatVersion" : "2010-09-09",
+      
+      
+     
+     "prarmeter":{},
+     "outputs":{},
+
+
+     "Resorses":{
+        
+        "MyVPC": {
+          "Type": "AWS::EC2::VPC",
+          "Properties": {
+            "CidrBlock": "192.168.0.0/22"
+          }
+        },
+        
+        
+        "publicSubnet": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": "us-east-2a",
+            "VpcId": 
+            { "Ref": "MyVPC" }
+            ,
+            "CidrBlock": "192.168.1.0/24"
+            
+          }
+        },
+        
+        "PublicRouteTable": {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "MyVPC" }
+          }
+        },
+        //provide 
+        
+        "PublicrouteTableAssoc": {
+          "Type": "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties": {
+            "SubnetId": { "Ref": "publicSubnet" },
+            "RouteTableId": { "Ref": "PublicRouteTable" }
+            
+          }
+        },
+
+        //internaet getway acess
+        
+        "MyIGW  ": {
+          "Type": "AWS::EC2::InternetGateway",
+          }
+        },
+        "AttachGateway": {
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "MyVPC" }
+            ,
+            "InternetGatewayId": { "Ref": "MyIGW" }
+          }
+        },
+        // provide the public router acess/ permission        
+
+        "PublicRoute": {
+          "Type": "AWS::EC2::Route",
+          "Properties": {
+            "RouteTableId": { "Ref": "PublicRouteTable" },
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "GatewayId": { "Ref": "MyIGW" }
+            
+          }
+        }
+        
+        
+    
+        
+ }     
+
